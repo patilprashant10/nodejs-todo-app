@@ -4,25 +4,25 @@ pipeline {
     stages{
         stage('Checkout'){
             steps{
-                git url: 'https://github.com/Basanagoudapatil02/Project-on-Building-and-Deploying-a-Node.js-Application-with-Docker-on-Ubuntu.git', branch: 'master'
+                git url: 'https://github.com/patilprashant10/nodejs-todo-app.git', branch: 'master'
             }
         }
         stage('Build'){
             steps{
-                sh 'sudo docker build . -t basanagoudapatil/nodo-todo-app-test:latest'
+                sh 'sudo docker build . -t patilprashant10/nodo-todo-app-test:latest'
             }
         }
         stage('Test image') {
             steps {
                 echo 'testing...'
-                sh 'sudo docker inspect --type=image basanagoudapatil/nodo-todo-app-test:latest '
+                sh 'sudo docker inspect --type=image patilprashant10/nodo-todo-app-test:latest '
             }
         }
         
         stage('Push'){
             steps{
-        	     sh "sudo docker login -u basanagoudapatil -p dckr_pat_OvN0lH_USJztUCkm0opyjz-yXNc"
-                 sh 'sudo docker push basanagoudapatil/nodo-todo-app-test:latest'
+        	     sh "sudo docker login -u patilprashant10 -p dckr_pat_WSdI97yEEw0n90icDyZ4vlmEPqY"
+                 sh 'sudo docker push patilprashant10/nodo-todo-app-test:latest'
             }
         }  
         stage('Deploy'){
@@ -30,14 +30,14 @@ pipeline {
                 echo 'deploying on another server'
                 sh 'sudo docker stop nodetodoapp || true'
                 sh 'sudo docker rm nodetodoapp || true'
-                sh 'sudo docker run -d --name nodetodoapp basanagoudapatil/nodo-todo-app-test:latest'
+                sh 'sudo docker run -d --name nodetodoapp patilprashant10/nodo-todo-app-test:latest'
                 sh '''
-                ssh -i Ubuntudemo.pem -o StrictHostKeyChecking=no ubuntu@44.211.144.201 <<EOF
-                sudo docker login -u basanagoudapatil -p dckr_pat_OvN0lH_USJztUCkm0opyjz-yXNc
-                sudo docker pull basanagoudapatil/nodo-todo-app-test:latest
+                ssh -i deployment.pem -o StrictHostKeyChecking=no ubuntu@3.80.24.188 <<EOF
+                sudo docker login -u patilprashant10 -p dckr_pat_WSdI97yEEw0n90icDyZ4vlmEPqY
+                sudo docker pull patilprashant10/nodo-todo-app-test:latest
                 sudo docker stop nodetodoapp || true
                 sudo docker rm nodetodoapp || true 
-                sudo docker run -d --name nodetodoapp basanagoudapatil/nodo-todo-app-test:latest
+                sudo docker run -d --name nodetodoapp patilprashant10/nodo-todo-app-test:latest
                 '''
             }
         }
